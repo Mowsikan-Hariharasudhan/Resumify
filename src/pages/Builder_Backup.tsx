@@ -157,7 +157,13 @@ const Builder = () => {
   // Hooks
   const { resumes, saveResume, deleteResume } = useResumes();
   const { user } = useAuth();
-  const { canDownload, totalDownloadsRemaining, consumeDownload } = usePurchases();
+  const {
+    canDownload,
+    freeDownloadsRemaining,
+    premiumDownloadsRemaining,
+    totalDownloadsRemaining,
+    consumeDownload
+  } = useDownloads();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const previewRef = useRef<HTMLDivElement>(null);
