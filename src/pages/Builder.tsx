@@ -1720,15 +1720,28 @@ const Builder = () => {
                 </p>
                 <div className="flex items-center gap-1 mt-1">
                   {canDownload ? (
-                    <Badge
-                      variant="outline"
-                      className="text-green-600 border-green-200 bg-green-50 text-xs"
-                    >
-                      <Download className="w-3 h-3 mr-1" />
-                      {totalDownloadsRemaining === 999999
-                        ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads`}
-                    </Badge>
+                    <div className="flex items-center gap-1">
+                      {freeDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-blue-600 border-blue-200 bg-blue-50 text-xs"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          {freeDownloadsRemaining} Free
+                        </Badge>
+                      )}
+                      {premiumDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-green-600 border-green-200 bg-green-50 text-xs"
+                        >
+                          <Crown className="w-3 h-3 mr-1" />
+                          {premiumDownloadsRemaining === 999999
+                            ? "Unlimited"
+                            : `${premiumDownloadsRemaining} Premium`}
+                        </Badge>
+                      )}
+                    </div>
                   ) : (
                     <Badge
                       variant="outline"
@@ -1900,16 +1913,29 @@ const Builder = () => {
                     </p>
                     <div className="flex items-center gap-1 mt-1">
                       {canDownload ? (
+                    <div className="flex items-center gap-1">
+                      {freeDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-blue-600 border-blue-200 bg-blue-50 text-xs"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          {freeDownloadsRemaining} Free
+                        </Badge>
+                      )}
+                      {premiumDownloadsRemaining > 0 && (
                         <Badge
                           variant="outline"
                           className="text-green-600 border-green-200 bg-green-50 text-xs"
                         >
-                          <Download className="w-3 h-3 mr-1" />
-                      {totalDownloadsRemaining === 999999
-                        ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads`}
+                          <Crown className="w-3 h-3 mr-1" />
+                          {premiumDownloadsRemaining === 999999
+                            ? "Unlimited"
+                            : `${premiumDownloadsRemaining} Premium`}
                         </Badge>
-                      ) : (
+                      )}
+                    </div>
+                  ) : (
                         <Badge
                           variant="outline"
                           className="text-orange-600 border-orange-200 bg-orange-50 text-xs"
