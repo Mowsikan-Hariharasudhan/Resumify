@@ -18,7 +18,7 @@ import { PageNavigation } from "@/components/PageNavigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useResumes } from "@/hooks/useResumes";
 import { useAuth } from "@/hooks/useAuth";
-import { usePurchases } from "@/hooks/usePurchases";
+import { useDownloads } from "@/hooks/useDownloads";
 import { useToast } from "@/hooks/use-toast";
 import { ResumeData } from "@/types/resume";
 import { TEMPLATES, getTemplateById } from "@/types/templates";
@@ -157,7 +157,13 @@ const Builder = () => {
   // Hooks
   const { resumes, saveResume, deleteResume } = useResumes();
   const { user } = useAuth();
-  const { canDownload, totalDownloadsRemaining, consumeDownload } = usePurchases();
+  const {
+    canDownload,
+    freeDownloadsRemaining,
+    premiumDownloadsRemaining,
+    totalDownloadsRemaining,
+    consumeDownload
+  } = useDownloads();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const previewRef = useRef<HTMLDivElement>(null);

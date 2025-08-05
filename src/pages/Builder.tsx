@@ -26,11 +26,12 @@ import { TemplateSelector } from "@/components/TemplateSelector";
 import { ResumePreview } from "@/components/ResumePreview";
 import { ResumePreviewModal } from "@/components/ResumePreviewModal";
 import { WatermarkChoiceModal } from "@/components/WatermarkChoiceModal";
+import { FreeDownloadExhaustedModal } from "@/components/FreeDownloadExhaustedModal";
 // import { BuilderSidebar } from "@/components/BuilderSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useResumes } from "@/hooks/useResumes";
 import { useAuth } from "@/hooks/useAuth";
-import { usePurchases } from "@/hooks/usePurchases";
+import { useDownloads } from "@/hooks/useDownloads";
 import { useToast } from "@/hooks/use-toast";
 import { ResumeData } from "@/types/resume";
 import { TEMPLATES, getTemplateById } from "@/types/templates";
@@ -125,8 +126,15 @@ const dummyResumeData: ResumeData = {
 const Builder = () => {
   const { user } = useAuth();
   const { saveResume, saveDownloadedResume } = useResumes();
-  const { canDownload, purchases, consumeDownload, refreshPurchases } =
-    usePurchases();
+  const {
+    canDownload,
+    freeDownloadsRemaining,
+    premiumDownloadsRemaining,
+    totalDownloadsRemaining,
+    consumeDownload,
+    refreshProfile,
+    refreshPurchases
+  } = useDownloads();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const previewRef = useRef<HTMLDivElement>(null);
@@ -151,6 +159,7 @@ const Builder = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showWatermarkChoice, setShowWatermarkChoice] = useState(false);
+  const [showFreeDownloadExhausted, setShowFreeDownloadExhausted] = useState(false);
   const [pendingDownloadType, setPendingDownloadType] = useState<
     "PDF" | "Image"
   >("PDF");
@@ -433,12 +442,7 @@ const Builder = () => {
     return () => window.removeEventListener("keydown", handleKeydown);
   }, [currentTab, tabs]);
 
-  // Calculate total downloads remaining
-  const totalDownloadsRemaining = purchases.reduce((total, purchase) => {
-    const isNotExpired =
-      !purchase.expires_at || new Date(purchase.expires_at) > new Date();
-    return isNotExpired ? total + purchase.downloads_remaining : total;
-  }, 0);
+
 
   // Get user display name
   const getUserDisplayName = () => {
@@ -833,8 +837,15 @@ const Builder = () => {
     }
 
     if (!canDownload) {
-      setPendingDownloadType("PDF");
-      setShowWatermarkChoice(true);
+      // Show different modals based on user's situation
+      if (freeDownloadsRemaining === 0 && premiumDownloadsRemaining === 0) {
+        // User has used free download but has no premium downloads
+        setShowFreeDownloadExhausted(true);
+      } else {
+        // Fallback to watermark choice (shouldn't happen with new logic, but keeping for safety)
+        setPendingDownloadType("PDF");
+        setShowWatermarkChoice(true);
+      }
       return;
     }
 
@@ -995,8 +1006,15 @@ const Builder = () => {
     }
 
     if (!canDownload) {
-      setPendingDownloadType("Image");
-      setShowWatermarkChoice(true);
+      // Show different modals based on user's situation
+      if (freeDownloadsRemaining === 0 && premiumDownloadsRemaining === 0) {
+        // User has used free download but has no premium downloads
+        setShowFreeDownloadExhausted(true);
+      } else {
+        // Fallback to watermark choice (shouldn't happen with new logic, but keeping for safety)
+        setPendingDownloadType("Image");
+        setShowWatermarkChoice(true);
+      }
       return;
     }
 
@@ -1160,6 +1178,11 @@ const Builder = () => {
 
   const handleOpenPricingFromWatermark = () => {
     setShowWatermarkChoice(false);
+    setShowPricingModal(true);
+  };
+
+  const handleOpenPricingFromFreeExhausted = () => {
+    setShowFreeDownloadExhausted(false);
     setShowPricingModal(true);
   };
 
@@ -1713,15 +1736,28 @@ const Builder = () => {
                 </p>
                 <div className="flex items-center gap-1 mt-1">
                   {canDownload ? (
-                    <Badge
-                      variant="outline"
-                      className="text-green-600 border-green-200 bg-green-50 text-xs"
-                    >
-                      <Download className="w-3 h-3 mr-1" />
-                      {totalDownloadsRemaining === 999999
-                        ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads Left`}
-                    </Badge>
+                    <div className="flex items-center gap-1">
+                      {freeDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-blue-600 border-blue-200 bg-blue-50 text-xs"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          {freeDownloadsRemaining} Free
+                        </Badge>
+                      )}
+                      {premiumDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-green-600 border-green-200 bg-green-50 text-xs"
+                        >
+                          <Crown className="w-3 h-3 mr-1" />
+                          {premiumDownloadsRemaining === 999999
+                            ? "Unlimited"
+                            : `${premiumDownloadsRemaining} Premium`}
+                        </Badge>
+                      )}
+                    </div>
                   ) : (
                     <Badge
                       variant="outline"
@@ -1893,16 +1929,29 @@ const Builder = () => {
                     </p>
                     <div className="flex items-center gap-1 mt-1">
                       {canDownload ? (
+                    <div className="flex items-center gap-1">
+                      {freeDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-blue-600 border-blue-200 bg-blue-50 text-xs"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          {freeDownloadsRemaining} Free
+                        </Badge>
+                      )}
+                      {premiumDownloadsRemaining > 0 && (
                         <Badge
                           variant="outline"
                           className="text-green-600 border-green-200 bg-green-50 text-xs"
                         >
-                          <Download className="w-3 h-3 mr-1" />
-                          {totalDownloadsRemaining === 999999
+                          <Crown className="w-3 h-3 mr-1" />
+                          {premiumDownloadsRemaining === 999999
                             ? "Unlimited"
-                            : `${totalDownloadsRemaining} Downloads Left`}
+                            : `${premiumDownloadsRemaining} Premium`}
                         </Badge>
-                      ) : (
+                      )}
+                    </div>
+                  ) : (
                         <Badge
                           variant="outline"
                           className="text-orange-600 border-orange-200 bg-orange-50 text-xs"
@@ -2040,28 +2089,40 @@ const Builder = () => {
                 </span>
               </h1>
               {user && (
-                <Badge
-                  variant="outline"
-                  className={`text-xs px-2 py-1 ${
-                    canDownload
-                      ? "text-green-600 border-green-200 bg-green-50"
-                      : "text-orange-600 border-orange-200 bg-orange-50"
-                  }`}
-                >
+                <div className="flex items-center gap-1">
                   {canDownload ? (
                     <>
-                      <Download className="w-3 h-3 mr-1" />
-                      {totalDownloadsRemaining === 999999
-                        ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads Left`}
+                      {freeDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs px-2 py-1 text-blue-600 border-blue-200 bg-blue-50"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          {freeDownloadsRemaining} Free
+                        </Badge>
+                      )}
+                      {premiumDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs px-2 py-1 text-green-600 border-green-200 bg-green-50"
+                        >
+                          <Crown className="w-3 h-3 mr-1" />
+                          {premiumDownloadsRemaining === 999999
+                            ? "Unlimited"
+                            : `${premiumDownloadsRemaining} Premium`}
+                        </Badge>
+                      )}
                     </>
                   ) : (
-                    <>
+                    <Badge
+                      variant="outline"
+                      className="text-xs px-2 py-1 text-orange-600 border-orange-200 bg-orange-50"
+                    >
                       <Crown className="w-3 h-3 mr-1" />
                       No Downloads
-                    </>
+                    </Badge>
                   )}
-                </Badge>
+                </div>
               )}
             </div>
 
@@ -3381,6 +3442,13 @@ const Builder = () => {
         onDownloadWithWatermark={handleDownloadWithWatermark}
         onOpenPricing={handleOpenPricingFromWatermark}
         downloadType={pendingDownloadType}
+      />
+
+      {/* Free Download Exhausted Modal */}
+      <FreeDownloadExhaustedModal
+        isOpen={showFreeDownloadExhausted}
+        onClose={() => setShowFreeDownloadExhausted(false)}
+        onOpenPricing={handleOpenPricingFromFreeExhausted}
       />
     </div>
   );
