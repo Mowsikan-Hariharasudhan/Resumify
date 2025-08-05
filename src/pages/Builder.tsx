@@ -2073,28 +2073,40 @@ const Builder = () => {
                 </span>
               </h1>
               {user && (
-                <Badge
-                  variant="outline"
-                  className={`text-xs px-2 py-1 ${
-                    canDownload
-                      ? "text-green-600 border-green-200 bg-green-50"
-                      : "text-orange-600 border-orange-200 bg-orange-50"
-                  }`}
-                >
+                <div className="flex items-center gap-1">
                   {canDownload ? (
                     <>
-                      <Download className="w-3 h-3 mr-1" />
-                      {totalDownloadsRemaining === 999999
-                        ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads`}
+                      {freeDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs px-2 py-1 text-blue-600 border-blue-200 bg-blue-50"
+                        >
+                          <Zap className="w-3 h-3 mr-1" />
+                          {freeDownloadsRemaining} Free
+                        </Badge>
+                      )}
+                      {premiumDownloadsRemaining > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs px-2 py-1 text-green-600 border-green-200 bg-green-50"
+                        >
+                          <Crown className="w-3 h-3 mr-1" />
+                          {premiumDownloadsRemaining === 999999
+                            ? "Unlimited"
+                            : `${premiumDownloadsRemaining} Premium`}
+                        </Badge>
+                      )}
                     </>
                   ) : (
-                    <>
+                    <Badge
+                      variant="outline"
+                      className="text-xs px-2 py-1 text-orange-600 border-orange-200 bg-orange-50"
+                    >
                       <Crown className="w-3 h-3 mr-1" />
                       No Downloads
-                    </>
+                    </Badge>
                   )}
-                </Badge>
+                </div>
               )}
             </div>
 
