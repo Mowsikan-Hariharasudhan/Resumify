@@ -133,8 +133,14 @@ export const useDownloads = () => {
         const remaining = (profile?.free_downloads_remaining || 1) - 1;
         if (remaining === 0) {
           toast({
-            title: "Free download used",
-            description: "You've used your free download. Upgrade to premium for more downloads!",
+            title: "Free download used! 🎉",
+            description: "You've used your 1 free download without watermark. Upgrade to premium for unlimited clean downloads!",
+            variant: "default",
+          });
+        } else {
+          toast({
+            title: "Free download successful! ✨",
+            description: `Download completed! You have ${remaining} free download(s) remaining.`,
             variant: "default",
           });
         }
