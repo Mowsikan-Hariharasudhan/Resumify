@@ -3448,6 +3448,13 @@ const Builder = () => {
         onOpenPricing={handleOpenPricingFromWatermark}
         downloadType={pendingDownloadType}
       />
+
+      {/* Free Download Exhausted Modal */}
+      <FreeDownloadExhaustedModal
+        isOpen={showFreeDownloadExhausted}
+        onClose={() => setShowFreeDownloadExhausted(false)}
+        onOpenPricing={handleOpenPricingFromFreeExhausted}
+      />
     </div>
   );
 };
