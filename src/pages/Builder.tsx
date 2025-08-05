@@ -159,6 +159,7 @@ const Builder = () => {
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [isContentOverflowing, setIsContentOverflowing] = useState(false);
   const [showWatermarkChoice, setShowWatermarkChoice] = useState(false);
+  const [showFreeDownloadExhausted, setShowFreeDownloadExhausted] = useState(false);
   const [pendingDownloadType, setPendingDownloadType] = useState<
     "PDF" | "Image"
   >("PDF");
