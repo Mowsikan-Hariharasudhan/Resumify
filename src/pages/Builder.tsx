@@ -1011,8 +1011,15 @@ const Builder = () => {
     }
 
     if (!canDownload) {
-      setPendingDownloadType("Image");
-      setShowWatermarkChoice(true);
+      // Show different modals based on user's situation
+      if (freeDownloadsRemaining === 0 && premiumDownloadsRemaining === 0) {
+        // User has used free download but has no premium downloads
+        setShowFreeDownloadExhausted(true);
+      } else {
+        // Fallback to watermark choice (shouldn't happen with new logic, but keeping for safety)
+        setPendingDownloadType("Image");
+        setShowWatermarkChoice(true);
+      }
       return;
     }
 
