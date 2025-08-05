@@ -26,6 +26,7 @@ import { TemplateSelector } from "@/components/TemplateSelector";
 import { ResumePreview } from "@/components/ResumePreview";
 import { ResumePreviewModal } from "@/components/ResumePreviewModal";
 import { WatermarkChoiceModal } from "@/components/WatermarkChoiceModal";
+import { FreeDownloadExhaustedModal } from "@/components/FreeDownloadExhaustedModal";
 // import { BuilderSidebar } from "@/components/BuilderSidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useResumes } from "@/hooks/useResumes";
