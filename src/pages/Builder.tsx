@@ -1727,7 +1727,7 @@ const Builder = () => {
                       <Download className="w-3 h-3 mr-1" />
                       {totalDownloadsRemaining === 999999
                         ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads Left`}
+                        : `${totalDownloadsRemaining} Downloads`}
                     </Badge>
                   ) : (
                     <Badge
@@ -1905,9 +1905,9 @@ const Builder = () => {
                           className="text-green-600 border-green-200 bg-green-50 text-xs"
                         >
                           <Download className="w-3 h-3 mr-1" />
-                          {totalDownloadsRemaining === 999999
-                            ? "Unlimited"
-                            : `${totalDownloadsRemaining} Downloads Left`}
+                      {totalDownloadsRemaining === 999999
+                        ? "Unlimited"
+                        : `${totalDownloadsRemaining} Downloads`}
                         </Badge>
                       ) : (
                         <Badge
@@ -2060,7 +2060,7 @@ const Builder = () => {
                       <Download className="w-3 h-3 mr-1" />
                       {totalDownloadsRemaining === 999999
                         ? "Unlimited"
-                        : `${totalDownloadsRemaining} Downloads Left`}
+                        : `${totalDownloadsRemaining} Downloads`}
                     </>
                   ) : (
                     <>
