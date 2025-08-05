@@ -1186,6 +1186,11 @@ const Builder = () => {
     setShowPricingModal(true);
   };
 
+  const handleOpenPricingFromFreeExhausted = () => {
+    setShowFreeDownloadExhausted(false);
+    setShowPricingModal(true);
+  };
+
   const handleShowWatermarkChoiceFromModal = (type: "PDF" | "Image") => {
     setShowPreviewModal(false);
     setPendingDownloadType(type);
