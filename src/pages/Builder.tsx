@@ -30,7 +30,7 @@ import { WatermarkChoiceModal } from "@/components/WatermarkChoiceModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useResumes } from "@/hooks/useResumes";
 import { useAuth } from "@/hooks/useAuth";
-import { usePurchases } from "@/hooks/usePurchases";
+import { useDownloads } from "@/hooks/useDownloads";
 import { useToast } from "@/hooks/use-toast";
 import { ResumeData } from "@/types/resume";
 import { TEMPLATES, getTemplateById } from "@/types/templates";
@@ -125,8 +125,15 @@ const dummyResumeData: ResumeData = {
 const Builder = () => {
   const { user } = useAuth();
   const { saveResume, saveDownloadedResume } = useResumes();
-  const { canDownload, purchases, consumeDownload, refreshPurchases } =
-    usePurchases();
+  const {
+    canDownload,
+    freeDownloadsRemaining,
+    premiumDownloadsRemaining,
+    totalDownloadsRemaining,
+    consumeDownload,
+    refreshProfile,
+    refreshPurchases
+  } = useDownloads();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const previewRef = useRef<HTMLDivElement>(null);
